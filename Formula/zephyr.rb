@@ -12,18 +12,18 @@ class Zephyr < Formula
   on_macos do
     on_arm do
       url "https://github.com/electricjesus/zephyr-cli/releases/download/v#{version}/zephyr-macos-arm64"
-      sha256 "c9974795fe3815c84b63ce470afb7cc07062443f1a900b70e83ca559938a5a8d"
+      sha256 "96eef35f025744dec663a9dd4d695ba298cabf81c1d6e1dc6325b34c5a9a4201"
     end
     on_intel do
       url "https://github.com/electricjesus/zephyr-cli/releases/download/v#{version}/zephyr-macos-x64"
-      sha256 "04414e2799da7c256672365f1ed7c3b0b096a4c228b77a6cae53916d62801f4b"
+      sha256 "040809dc3c97d1b614361e5bf99b841a7df077309844e3fe235cfd4b9eddbde7"
     end
   end
 
   on_linux do
     on_intel do
       url "https://github.com/electricjesus/zephyr-cli/releases/download/v#{version}/zephyr-linux-x64"
-      sha256 "f5473c927f0503fbec922a16dd834e7c13a4b25b51ef9b1f8fe4619a3320d069"
+      sha256 "0ad6edbf7784b6f2d97b421140fedc593a9e5b88119ca0339db47d5d1ca2fc00"
     end
   end
 
