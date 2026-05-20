@@ -6,24 +6,24 @@
 class Zephyr < Formula
   desc "CLI tool for Zephyr Scale API"
   homepage "https://github.com/electricjesus/zephyr-cli"
-  version "1.2.3"
+  version "1.2.4"
   license "MIT"
 
   on_macos do
     on_arm do
       url "https://github.com/electricjesus/zephyr-cli/releases/download/v#{version}/zephyr-macos-arm64"
-      sha256 "SHA256_MACOS_ARM64"
+      sha256 "c9974795fe3815c84b63ce470afb7cc07062443f1a900b70e83ca559938a5a8d"
     end
     on_intel do
       url "https://github.com/electricjesus/zephyr-cli/releases/download/v#{version}/zephyr-macos-x64"
-      sha256 "SHA256_MACOS_X64"
+      sha256 "04414e2799da7c256672365f1ed7c3b0b096a4c228b77a6cae53916d62801f4b"
     end
   end
 
   on_linux do
     on_intel do
       url "https://github.com/electricjesus/zephyr-cli/releases/download/v#{version}/zephyr-linux-x64"
-      sha256 "SHA256_LINUX_X64"
+      sha256 "f5473c927f0503fbec922a16dd834e7c13a4b25b51ef9b1f8fe4619a3320d069"
     end
   end
 
