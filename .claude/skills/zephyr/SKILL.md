@@ -13,6 +13,40 @@ claudecode:
 
 The `zephyr` CLI wraps the entire Zephyr Scale REST API. Both users and AI agents can perform the same operations.
 
+## Setup
+
+**Pre-flight — run first, stop on any `fail`:**
+
+```bash
+SCRIPT="$(find ~/.claude/plugins -name 'preflight.sh' -path '*zephyr*' 2>/dev/null | head -1)"
+bash "$SCRIPT"
+```
+
+Checks: `zephyr` on PATH · `~/.zephyr/config.json` exists · `apiToken` not placeholder · `projectKey` set · `jiraBaseUrl` set.
+
+**Install:**
+
+```bash
+SCRIPT="$(find ~/.claude/plugins -name 'install.sh' -path '*zephyr*' 2>/dev/null | head -1)"
+bash "$SCRIPT"
+# flags: --force (reinstall), --no-config (skip config scaffold)
+```
+
+Taps `electricjesus/zephyr-cli` and installs via Homebrew. Binaries are built from source on the fork via CI and published to fork releases — no dependency on upstream bun913. Scaffolds `~/.zephyr/config.json` if missing — edit it to add `apiToken`, `projectKey`, `jiraBaseUrl`. Use `--upgrade` if already installed.
+
+Get your API token: Zephyr Scale Settings → API Keys.
+
+**Verify:**
+
+```bash
+SCRIPT="$(find ~/.claude/plugins -name 'verify.sh' -path '*zephyr*' 2>/dev/null | head -1)"
+bash "$SCRIPT"
+```
+
+Checks binary callable, config valid, API reachable (project list returns results).
+
+---
+
 ## Global Options
 
 Every command accepts:

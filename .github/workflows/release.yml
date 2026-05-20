@@ -146,3 +146,68 @@ jobs:
           tag_name: v${{ steps.version.outputs.VERSION }}
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
+  update-formula:
+    needs: build-binaries
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+    steps:
+      - name: Extract version from tag
+        id: version
+        run: echo "VERSION=${GITHUB_REF#refs/tags/v}" >> $GITHUB_OUTPUT
+
+      - name: Checkout release branch
+        uses: actions/checkout@v4
+        with:
+          ref: release/v${{ steps.version.outputs.VERSION }}
+
+      - name: Download release binaries and compute SHA256
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          VERSION="${{ steps.version.outputs.VERSION }}"
+          gh release download "v${VERSION}" \
+            --pattern "zephyr-macos-arm64" \
+            --pattern "zephyr-macos-x64" \
+            --pattern "zephyr-linux-x64" \
+            --dir /tmp/bins
+          echo "SHA_MACOS_ARM64=$(sha256sum /tmp/bins/zephyr-macos-arm64 | awk '{print $1}')" >> $GITHUB_ENV
+          echo "SHA_MACOS_X64=$(sha256sum /tmp/bins/zephyr-macos-x64 | awk '{print $1}')" >> $GITHUB_ENV
+          echo "SHA_LINUX_X64=$(sha256sum /tmp/bins/zephyr-linux-x64 | awk '{print $1}')" >> $GITHUB_ENV
+
+      - name: Patch formula
+        env:
+          VERSION: ${{ steps.version.outputs.VERSION }}
+        run: |
+          python3 - <<'EOF'
+          import re, os
+
+          formula = open("Formula/zephyr.rb").read()
+
+          formula = re.sub(r'version "[^"]*"', f'version "{os.environ["VERSION"]}"', formula)
+
+          # Replace sha256 immediately following each platform URL — works for both
+          # first-run placeholders and subsequent real hashes.
+          def patch_sha(text, binary, new_sha):
+              return re.sub(
+                  r'(url ".*' + re.escape(binary) + r'.*"\n\s+sha256 ")[^"]*(")',
+                  lambda m: m.group(1) + new_sha + m.group(2),
+                  text,
+              )
+
+          formula = patch_sha(formula, "zephyr-macos-arm64", os.environ["SHA_MACOS_ARM64"])
+          formula = patch_sha(formula, "zephyr-macos-x64",   os.environ["SHA_MACOS_X64"])
+          formula = patch_sha(formula, "zephyr-linux-x64",   os.environ["SHA_LINUX_X64"])
+
+          open("Formula/zephyr.rb", "w").write(formula)
+          print("Formula updated.")
+          EOF
+
+      - name: Commit formula update
+        run: |
+          git config user.name 'github-actions[bot]'
+          git config user.email 'github-actions[bot]@users.noreply.github.com'
+          git add Formula/zephyr.rb
+          git commit -m "chore: update formula SHA256 for v${{ steps.version.outputs.VERSION }}"
+          git push origin release/v${{ steps.version.outputs.VERSION }}
