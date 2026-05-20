@@ -22,7 +22,7 @@ SCRIPT="$(find ~/.claude/plugins -name 'preflight.sh' -path '*zephyr*' 2>/dev/nu
 bash "$SCRIPT"
 ```
 
-Checks: `zephyr` on PATH · `~/.zephyr/config.json` exists · `apiToken` not placeholder · `projectKey` set · `jiraBaseUrl` set.
+Checks: `brew` present · `zephyr` on PATH · `~/.zephyr/config.json` exists · `apiToken` not placeholder · `projectKey` set · `jiraBaseUrl` set.
 
 **Install:**
 

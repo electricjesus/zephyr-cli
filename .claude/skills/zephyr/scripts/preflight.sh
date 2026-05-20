@@ -24,21 +24,14 @@ emit() {
 
 CONFIG="$HOME/.zephyr/config.json"
 
-# 1. brew (needed to install bun if bun absent)
+# 1. brew (required to install zephyr via tap)
 if command -v brew >/dev/null 2>&1; then
   emit ok "brew" "$(brew --version 2>/dev/null | head -1)"
 else
-  emit warn "brew" "Homebrew not found — needed to install bun if bun is absent. See https://brew.sh"
+  emit fail "brew" "Homebrew not found — required to install zephyr. See https://brew.sh"
 fi
 
-# 2. bun (required to build zephyr from source)
-if command -v bun >/dev/null 2>&1; then
-  emit ok "bun" "$(bun --version 2>/dev/null)"
-else
-  emit fail "bun" "bun not on PATH — required to build zephyr from source. Install: brew install bun OR https://bun.sh/docs/installation"
-fi
-
-# 3. zephyr binary (informational — may not be installed yet)
+# 2. zephyr binary (informational — may not be installed yet)
 if command -v zephyr >/dev/null 2>&1; then
   emit ok "zephyr-binary" "$(zephyr --version 2>/dev/null || echo 'installed')"
 else
