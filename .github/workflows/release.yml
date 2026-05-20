@@ -51,8 +51,8 @@ jobs:
         run: |
           git checkout -b release/v${{ steps.version.outputs.VERSION }}
           git add package.json bun.lock src/index.ts
-          git commit -m "chore: bump version to v${{ steps.version.outputs.VERSION }}"
-          git push origin release/v${{ steps.version.outputs.VERSION }}
+          git diff --staged --quiet || git commit -m "chore: bump version to v${{ steps.version.outputs.VERSION }}"
+          git push --force origin release/v${{ steps.version.outputs.VERSION }}
 
       - name: Create Pull Request
         uses: actions/github-script@v7
